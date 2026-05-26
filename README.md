@@ -38,9 +38,7 @@ O projeto consiste em um jogo da velha interativo para dois jogadores, implement
 projeto/
 │
 ├── index.html
-├── README.md
-│
-└── assets/
+└──  README.md
 ```
 
 ---
