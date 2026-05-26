@@ -103,9 +103,14 @@ Tela principal composta por:
 
 ---
 
-## 👨‍🎓 Autor
+## 👨‍🎓 Autores
 
-Desenvolvido por **Kawhe Alves dos Santos**
+Desenvolvido por:
+**Kawhe Alves dos Santos**
+**Vitor**
+**Carlos**
+**Nykolas**
+**Samuel**
 
 Curso: Engenharia Civil  
 Disciplina: Algoritmo e Programação
