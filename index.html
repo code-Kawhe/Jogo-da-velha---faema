@@ -19,12 +19,9 @@
         let currentPlayer = 'X';
         let board = Array(9).fill('');
         const wins = [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[0, 4, 8],[2, 4, 6]];
-        const updateStatus = (message, type = 'info') => {
-            $('#status').removeClass('alert-info alert-success alert-warning').addClass(`alert-${type}`).html(message);
-        };
         const finishGame = (message, type) => {
             $('.cell').prop('disabled', true);
-            updateStatus(message, type);
+             $('#status').removeClass('alert-info alert-success alert-warning').addClass(`alert-${type}`).html(message);
         };
         $('.cell').click( function () {
             const i = $(this).data('i');
@@ -39,16 +36,15 @@
               finishGame('Empate! Ninguém venceu esta rodada.', 'warning'); return;
             }
             currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-            updateStatus(`Vez do jogador: <strong>${currentPlayer}</strong>`, 'info');
+            $('#status').removeClass('alert-info alert-success alert-warning').addClass(`alert-info`).html(`Vez do jogador: <strong>${currentPlayer}</strong>`);
         });
         $('#newRound').click( function(){
            currentPlayer = 'X';
            board = Array(9).fill('');
            $('.cell').text('').prop('disabled', false).removeClass('player-x player-o btn-success btn-warning').addClass('btn-outline-light');
-           updateStatus('Vez do jogador: <strong>X</strong>', 'info');
+           $('#status').removeClass('alert-info alert-success alert-warning').addClass(`alert-info`).html('Vez do jogador: <strong>X</strong>');
         });
       });
     </script>
-    
   </body>
 </html>
