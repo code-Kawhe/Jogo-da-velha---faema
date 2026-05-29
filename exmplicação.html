@@ -4,19 +4,56 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Jogo da Velha</title>
+    
     <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <style>.leadboard {color: white; font-family: 'Inter', sans-serif; font-size: 24pt} h1 {color: white; font-family: 'Leixo', sans-serif}body{background-color: rgb(15,140,232); font-family: 'Inter', sans-serif}.board {display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; max-width: 300px; margin: 0 auto;}.cell {height: 95px; font-size: 2.25rem; font-weight: 700; aspect-ratio: 1/1; margin: auto;}</style>
-  </head>
+    
+    <!-- Estilos personalizados -->
+    <style>
+        .leadboard {
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 24pt
+        }
+        h1 {
+            color: white;
+            font-family: 'Leixo', sans-serif
+        }
+        body{
+            background-color: rgb(15,140,232);
+            font-family: 'Inter', sans-serif
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .cell {
+            height: 95px;
+            font-size: 2.25rem;
+            font-weight: 700;
+            aspect-ratio: 1/1;
+            margin: auto;
+        }
+    </style>
+  
+</head>
+
   <body>
+    <!-- Título do jogo -->
     <h1 class="h3 text-center mb-4 mt-4">JOGO Da VELha</h1>
 
+    <!-- Status do jogo, indicando a vez do jogador -->
     <div class="d-flex justify-content-center"><div class="alert alert-info text-center max-w-200" id="status">Vez do jogador: <strong>X</strong></div></div>
 
+    <!-- Placar dos jogadores -->
     <div class="d-flex justify-content-center leadboard mb-3">
       <span class="mx-2">X: <span id="x-score">0</span></span><span  class="mx-2">O: <span id="o-score">0</span></span>
     </div>
 
+    <!-- Tabuleiro do jogo da velha -->
     <div class="board" aria-label="Tabuleiro do jogo da velha">
       <button class="btn btn-outline-light cell" data-i="0" aria-label="Casa 1"></button>
       <button class="btn btn-outline-light cell" data-i="1" aria-label="Casa 2"></button>
@@ -29,57 +66,95 @@
       <button class="btn btn-outline-light cell" data-i="8" aria-label="Casa 9"></button>
     </div>
 
+    <!-- Botões para nova rodada e novo jogo -->
     <div class="alert d-flex justify-content-center">
       <button id="newRound" class="btn btn-success max-w-100">Nova rodada</button>
       <button id="NewGame" class="btn btn-danger max-w-100 ml-5">Novo jogo</button>
     </div>
 
+    <!-- Link para outra versão do jogo -->
     <div class="d-flex justify-content-center"><a class="alert alert-info" href="/">Outra versão</a></div>
 
+    <!-- Apenas assinatura do Kawhe e tbm as fontes não remover!!! -->
     <script src="https://kawhe.com.br/assets/kawhe-signature.js"></script>
     
     <script>
 
+      // Variável para controlar o jogador atual (X ou O)
       let currentPlayer = 'X'
 
+      // Objeto para manter o placar dos jogadores
       let Score = {X: 0, O: 0}
 
+      // Array para representar o estado do tabuleiro, inicialmente vazio
       let board = Array(9).fill('')
 
+      // Array para representar as combinações vencedoras do jogo
       const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
 
+      // Função para finalizar o jogo, mostrar a mensagem e atualizar o placar
       const finishGame = (message, type, cp) => {
+
+        // Desabilita as células para evitar mais jogadas
         $('.cell').prop('disabled', true)
+
+        // Atualiza o status com a mensagem de vitória ou empate
         $('#status').removeClass('alert-info alert-success alert-warning').addClass(`alert-${type}`).html(message)
+
+        // Se houver um jogador vencedor (cp), atualiza o placar
         if (cp) {
-          Score[cp]++; $(`#${cp.toLowerCase()}-score`)
-          .text(Score[cp])
+          Score[cp]++ // Incrementa a pontuação do jogador vencedor
+          $(`#${cp.toLowerCase()}-score`).text(Score[cp]) // Atualiza o placar na interface
         }
       }
 
+      // Ao clicar em uma célula do tabuleiro
       $('#NewGame').click(() => {location.reload();})
 
+      // Ao clicar em uma célula do tabuleiro
       $('.cell').click(function () {
+
+        // Se a célula já estiver preenchida, não faz nada
+         if (board[$(this).data('i')]) return
+
+        // Preenche a célula no array de estado do jogo
         if (board[$(this).data('i')]) return
+
+        // Preenche a célula no array de estado do jogo
         board[$(this).data('i')] = currentPlayer
 
+        // Atualiza a interface da célula clicada
         $(this).text(currentPlayer).removeClass('btn-outline-light').addClass(currentPlayer === 'X'? 'player-x btn-success': 'player-o btn-warning')
 
+        // Verifica se o jogador atual venceu
         const won = wins.some(([a,b,c]) =>board[a] &&board[a] === board[b] &&board[b] === board[c])
 
+        // Se alguém venceu, finaliza o jogo e atualiza o placar
         if (won) {finishGame(`🎉 Jogador <strong>${currentPlayer}</strong> venceu!`,'success',currentPlayer); return}
 
+        // Se não há mais casas vazias, é empate
         if (!board.includes('')) {finishGame('Empate! Ninguém venceu esta rodada.','warning'); return}
         
+        // Alterna o jogador atual
         currentPlayer = currentPlayer === 'X'? 'O': 'X'
 
+        // Atualiza o status para indicar a vez do próximo jogador
         $('#status').removeClass('alert-info alert-success alert-warning').addClass('alert-info').html(`Vez do jogador: <strong>${currentPlayer}</strong>`)
       })
 
+      // Ao clicar no botão de nova rodada, reseta o tabuleiro e mantém o placar
       $('#newRound').click(() => {
+
+        // Reseta o estado do jogo para a nova rodada
         currentPlayer = 'X'
+
+        // Limpa o tabuleiro e habilita as células para a nova rodada
         board = Array(9).fill('')
+
+        // Reseta a interface das células para o estado inicial
         $('.cell').text('').prop('disabled', false).removeClass('player-x player-o btn-success btn-warning').addClass('btn-outline-light')
+
+        // Atualiza o status para indicar a vez do jogador X
         $('#status').removeClass('alert-info alert-success alert-warning').addClass('alert-info').html('Vez do jogador: <strong>X</strong>')
       })
       
