@@ -112,6 +112,8 @@ Desenvolvido por:
 **Nykolas**
 **Samuel**
 
+## 🔗 EXPLICAÇÃO (https://www.tldraw.com/f/Zmxg6DC51OmRqUo6BooZU?d=v183.-95.1097.628.page)
+
 Curso: Engenharia Civil  
 Disciplina: Algoritmo e Programação
 
