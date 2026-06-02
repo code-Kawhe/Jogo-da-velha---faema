@@ -26,3 +26,40 @@ Se a porta `3000` já estiver ocupada, rode em outra porta:
 ```powershell
 $env:PORT=3010; npm run dev
 ```
+<<<<<<< HEAD
+=======
+
+3. O jogo será executado diretamente no navegador.
+
+---
+
+## 📷 Interface
+
+Tela principal composta por:
+
+- Tabuleiro 3x3
+- Indicador de turno do jogador
+- Botão de reinício da partida
+
+---
+
+## 👨‍🎓 Autores
+
+Desenvolvido por:
+**Kawhe Alves dos Santos**
+**Vitor**
+**Carlos**
+**Nykolas**
+**Samuel**
+
+## 🔗 [EXPLICAÇÃO](https://www.tldraw.com/f/Zmxg6DC51OmRqUo6BooZU?d=v183.-95.1097.628.page)
+
+Curso: Engenharia Civil  
+Disciplina: Algoritmo e Programação
+
+---
+
+## 📅 Ano
+
+2026
+>>>>>>> 5f52d873e18d77a4c83c41cbfd828272e719a0b3
