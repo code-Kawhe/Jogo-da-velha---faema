@@ -20,6 +20,8 @@ http://localhost:3000
 
 5. O primeiro jogador conectado vira **X** e o segundo vira **O**.
 
+Para o multiplayer local, abra o jogo pelo endereco do servidor local, como `http://localhost:3000` ou o IP do computador na rede. Se abrir por um dominio HTTPS estatico, como `https://velha.kawhe.top`, o navegador nao consegue conectar no servidor local via WebSocket.
+
 Os aparelhos precisam estar na mesma rede Wi-Fi. Se nao conectar, libere a porta `3000` no firewall do computador que esta servindo o jogo.
 
 Se a porta `3000` ja estiver ocupada, rode em outra porta:

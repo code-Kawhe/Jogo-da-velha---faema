@@ -146,11 +146,6 @@
         [2, 4, 6],
       ];
 
-      const defaultWsUrl = () => {
-        const protocol = location.protocol === "https:" ? "wss:" : "ws:";
-        return `${protocol}//${location.host || "localhost:3000"}`;
-      };
-
       const numberToIp = (value) => {
         let number = Number(value);
         const parts = [];
@@ -188,6 +183,19 @@
         }
 
         return trimmed;
+      };
+
+      const isLocalAddress = (host) => {
+        return host === "localhost" || host === "127.0.0.1" || host.startsWith("10.") || host.startsWith("192.168.") || /^172\.(1[6-9]|2\d|3[0-1])\./.test(host);
+      };
+
+      const canUseServerUrl = (url) => {
+        try {
+          const parsed = new URL(url);
+          return !(location.protocol === "https:" && parsed.protocol === "ws:" && !isLocalAddress(location.hostname));
+        } catch {
+          return false;
+        }
       };
 
       const setStatus = (message, type = "info") => {
@@ -355,6 +363,11 @@
           return;
         }
 
+        if (!canUseServerUrl(url)) {
+          setStatus("Abra o jogo pelo endereco do servidor local antes de conectar.", "danger");
+          return;
+        }
+
         setConnectionState(false, "Conectando...", "badge-info");
 
         socket = new WebSocket(url);
@@ -401,8 +414,8 @@
           .then((data) => {
             if (!data || !data.code) {
               $("#hostCode").text("indisponivel");
-              $("#hostCodeBox").addClass("d-none");
-              $("#serverUrl").val(defaultWsUrl());
+              $("#connectionHelp").text("Para gerar um codigo, abra esta pagina pelo servidor local do jogo.");
+              $("#serverUrl").val("").attr("placeholder", "Digite o codigo do servidor");
               return;
             }
 
@@ -411,8 +424,8 @@
           })
           .catch(() => {
             $("#hostCode").text("indisponivel");
-            $("#hostCodeBox").addClass("d-none");
-            $("#serverUrl").val(defaultWsUrl());
+            $("#connectionHelp").text("Para gerar um codigo, abra esta pagina pelo servidor local do jogo.");
+            $("#serverUrl").val("").attr("placeholder", "Digite o codigo do servidor");
           });
       };
 
