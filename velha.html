@@ -4,46 +4,360 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Jogo da Velha</title>
-    <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"/>
-    <link rel="icon" type="image/x-icon" href="https://kawhe.com.br/favicon.ico"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link rel="icon" type="image/x-icon" href="https://kawhe.com.br/favicon.ico" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <style>.leadboard {color: white; font-family: 'Inter', sans-serif; font-size: 24pt} h1 {color: white; font-family: 'Leixo', sans-serif}body{background-color: rgb(15,140,232); font-family: 'Inter', sans-serif}.board {display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; max-width: 300px; margin: 0 auto;}.cell {height: 95px; font-size: 2.25rem; font-weight: 700; aspect-ratio: 1/1; margin: auto;}</style>
+    <style>
+      body {
+        background-color: rgb(15, 140, 232);
+        font-family: "Inter", sans-serif;
+      }
+
+      h1 {
+        color: white;
+        font-family: "Leixo", sans-serif;
+      }
+
+      .leadboard {
+        color: white;
+        font-family: "Inter", sans-serif;
+        font-size: 24pt;
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      .cell {
+        width: 95px;
+        height: 95px;
+        font-size: 2.25rem;
+        font-weight: 700;
+        aspect-ratio: 1/1;
+        margin: auto;
+      }
+
+      .multiplayer-panel {
+        max-width: 720px;
+        margin: 0 auto 1rem;
+      }
+
+      .connection-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        gap: 0.5rem;
+      }
+
+      .player-badge {
+        min-width: 86px;
+      }
+
+      @media (max-width: 576px) {
+        .connection-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .connection-grid .btn {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
     <h1 class="h3 text-center mb-4 mt-4">JOGO Da VELha</h1>
-    <div class="d-flex justify-content-center"><div class="alert alert-info text-center max-w-200" id="status">Vez do jogador: <strong>X</strong></div></div>
-    <div class="d-flex justify-content-center leadboard mb-3"><span class="mx-2">X: <span id="x-score">0</span></span><span  class="mx-2">O: <span id="o-score">0</span></span></div>
-    <div class="board" aria-label="Tabuleiro do jogo da velha"><button class="btn btn-outline-light cell" data-i="0" aria-label="Casa 1"></button><button class="btn btn-outline-light cell" data-i="1" aria-label="Casa 2"></button><button class="btn btn-outline-light cell" data-i="2" aria-label="Casa 3"></button><button class="btn btn-outline-light cell" data-i="3" aria-label="Casa 4"></button><button class="btn btn-outline-light cell" data-i="4" aria-label="Casa 5"></button><button class="btn btn-outline-light cell" data-i="5" aria-label="Casa 6"></button><button class="btn btn-outline-light cell" data-i="6" aria-label="Casa 7"></button><button class="btn btn-outline-light cell" data-i="7" aria-label="Casa 8"></button><button class="btn btn-outline-light cell" data-i="8" aria-label="Casa 9"></button></div>
-    <div class="alert d-flex justify-content-center"><button id="newRound" class="btn btn-success max-w-100">Nova rodada</button><button id="NewGame" class="btn btn-danger max-w-100 ml-5">Novo jogo</button></div>
-    <div class="d-flex justify-content-center"><a class="alert alert-info" href="/">Outra versão</a></div>
+
+    <div class="card multiplayer-panel">
+      <div class="card-body">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+          <strong>Multiplayer local</strong>
+          <span class="badge badge-secondary player-badge" id="playerBadge">Offline</span>
+        </div>
+        <div class="connection-grid">
+          <input class="form-control" id="serverUrl" aria-label="Endereço do servidor" />
+          <button class="btn btn-primary" id="connectBtn">Conectar</button>
+          <button class="btn btn-outline-secondary" id="disconnectBtn" disabled>Desconectar</button>
+        </div>
+        <small class="form-text text-muted mt-2" id="connectionHelp">
+          Para jogar em dois aparelhos, rode o servidor e abra este endereço nos dois navegadores.
+        </small>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <div class="alert alert-info text-center max-w-200" id="status">Vez do jogador: <strong>X</strong></div>
+    </div>
+
+    <div class="d-flex justify-content-center leadboard mb-3">
+      <span class="mx-2">X: <span id="x-score">0</span></span>
+      <span class="mx-2">O: <span id="o-score">0</span></span>
+    </div>
+
+    <div class="board" aria-label="Tabuleiro do jogo da velha">
+      <button class="btn btn-outline-light cell" data-i="0" aria-label="Casa 1"></button>
+      <button class="btn btn-outline-light cell" data-i="1" aria-label="Casa 2"></button>
+      <button class="btn btn-outline-light cell" data-i="2" aria-label="Casa 3"></button>
+      <button class="btn btn-outline-light cell" data-i="3" aria-label="Casa 4"></button>
+      <button class="btn btn-outline-light cell" data-i="4" aria-label="Casa 5"></button>
+      <button class="btn btn-outline-light cell" data-i="5" aria-label="Casa 6"></button>
+      <button class="btn btn-outline-light cell" data-i="6" aria-label="Casa 7"></button>
+      <button class="btn btn-outline-light cell" data-i="7" aria-label="Casa 8"></button>
+      <button class="btn btn-outline-light cell" data-i="8" aria-label="Casa 9"></button>
+    </div>
+
+    <div class="alert d-flex justify-content-center">
+      <button id="newRound" class="btn btn-success max-w-100">Nova rodada</button>
+      <button id="NewGame" class="btn btn-danger max-w-100 ml-5">Novo jogo</button>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <a class="alert alert-info" href="/">Outra versão</a>
+    </div>
+
     <script src="https://kawhe.com.br/assets/kawhe-signature.js"></script>
     <script>
-      let currentPlayer = 'X'
-      let Score = {X: 0, O: 0}
-      let board = Array(9).fill('')
-      const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-      const finishGame = (message, type, cp) => {
-        $('.cell').prop('disabled', true)
-        $('#status').removeClass('alert-info alert-success alert-warning').addClass(`alert-${type}`).html(message)
-        if (cp) {Score[cp]++; $(`#${cp.toLowerCase()}-score`).text(Score[cp])}
-      }
-      $('#NewGame').click(() => {location.reload();})
-      $('.cell').click(function () {
-        if (board[$(this).data('i')]) return
-        board[$(this).data('i')] = currentPlayer
-        $(this).text(currentPlayer).removeClass('btn-outline-light').addClass(currentPlayer === 'X'? 'player-x btn-success': 'player-o btn-warning')
-        const won = wins.some(([a,b,c]) =>board[a] &&board[a] === board[b] &&board[b] === board[c])
-        if (won) {finishGame(`🎉 Jogador <strong>${currentPlayer}</strong> venceu!`,'success',currentPlayer); return}
-        if (!board.includes('')) {finishGame('Empate! Ninguém venceu esta rodada.','warning'); return}
-        currentPlayer = currentPlayer === 'X'? 'O': 'X'
-        $('#status').removeClass('alert-info alert-success alert-warning').addClass('alert-info').html(`Vez do jogador: <strong>${currentPlayer}</strong>`)
-      })
-      $('#newRound').click(() => {
-        currentPlayer = 'X'
-        board = Array(9).fill('')
-        $('.cell').text('').prop('disabled', false).removeClass('player-x player-o btn-success btn-warning').addClass('btn-outline-light')
-        $('#status').removeClass('alert-info alert-success alert-warning').addClass('alert-info').html('Vez do jogador: <strong>X</strong>')
-      })
+      let currentPlayer = "X";
+      let score = { X: 0, O: 0 };
+      let board = Array(9).fill("");
+      let roundOver = false;
+      let socket = null;
+      let myPlayer = null;
+      let isConnected = false;
+
+      const wins = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+
+      const defaultWsUrl = () => {
+        const protocol = location.protocol === "https:" ? "wss:" : "ws:";
+        return `${protocol}//${location.host || "localhost:3000"}`;
+      };
+
+      const setStatus = (message, type = "info") => {
+        $("#status")
+          .removeClass("alert-info alert-success alert-warning alert-danger")
+          .addClass(`alert-${type}`)
+          .html(message);
+      };
+
+      const setConnectionState = (connected, text, badgeClass = "badge-secondary") => {
+        isConnected = connected;
+        $("#connectBtn").prop("disabled", connected);
+        $("#disconnectBtn").prop("disabled", !connected);
+        $("#playerBadge")
+          .removeClass("badge-secondary badge-success badge-warning badge-info badge-danger")
+          .addClass(badgeClass)
+          .text(text);
+      };
+
+      const paintCell = (index, value) => {
+        const $cell = $(`.cell[data-i="${index}"]`);
+        $cell
+          .text(value)
+          .removeClass("player-x player-o btn-success btn-warning btn-outline-light")
+          .addClass(value === "X" ? "player-x btn-success" : value === "O" ? "player-o btn-warning" : "btn-outline-light");
+      };
+
+      const canPlayLocal = () => !isConnected && !roundOver;
+      const canPlayOnline = () => isConnected && myPlayer && myPlayer === currentPlayer && !roundOver;
+
+      const updateBoard = () => {
+        board.forEach((value, index) => paintCell(index, value));
+        $(".cell").prop("disabled", roundOver || (isConnected && !canPlayOnline()));
+        if (isConnected && myPlayer && !roundOver) {
+          $(".cell").each(function () {
+            const index = $(this).data("i");
+            $(this).prop("disabled", board[index] || !canPlayOnline());
+          });
+        }
+      };
+
+      const updateScore = () => {
+        $("#x-score").text(score.X);
+        $("#o-score").text(score.O);
+      };
+
+      const finishGame = (message, type, winner) => {
+        roundOver = true;
+        if (winner) {
+          score[winner]++;
+        }
+        updateScore();
+        updateBoard();
+        setStatus(message, type);
+      };
+
+      const updateTurnStatus = () => {
+        if (roundOver) {
+          return;
+        }
+
+        if (isConnected && myPlayer) {
+          const turnText = myPlayer === currentPlayer ? "Sua vez" : `Vez do jogador ${currentPlayer}`;
+          setStatus(`${turnText}: <strong>${currentPlayer}</strong>`);
+          return;
+        }
+
+        if (isConnected && !myPlayer) {
+          setStatus(`Você está assistindo. Vez do jogador: <strong>${currentPlayer}</strong>`);
+          return;
+        }
+
+        setStatus(`Vez do jogador: <strong>${currentPlayer}</strong>`);
+      };
+
+      const applyServerState = (state) => {
+        board = state.board;
+        currentPlayer = state.currentPlayer;
+        score = state.score;
+        roundOver = state.roundOver;
+        updateScore();
+        updateBoard();
+
+        if (state.message) {
+          setStatus(state.message.text, state.message.type);
+        } else {
+          updateTurnStatus();
+        }
+      };
+
+      const send = (payload) => {
+        if (!socket || socket.readyState !== WebSocket.OPEN) {
+          return;
+        }
+        socket.send(JSON.stringify(payload));
+      };
+
+      const handleMove = (index) => {
+        if (board[index]) {
+          return;
+        }
+
+        if (isConnected) {
+          if (canPlayOnline()) {
+            send({ type: "move", index });
+          }
+          return;
+        }
+
+        if (!canPlayLocal()) {
+          return;
+        }
+
+        board[index] = currentPlayer;
+        paintCell(index, currentPlayer);
+
+        const won = wins.some(([a, b, c]) => board[a] && board[a] === board[b] && board[b] === board[c]);
+        if (won) {
+          finishGame(`Jogador <strong>${currentPlayer}</strong> venceu!`, "success", currentPlayer);
+          return;
+        }
+
+        if (!board.includes("")) {
+          finishGame("Empate! Ninguém venceu esta rodada.", "warning");
+          return;
+        }
+
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+        updateTurnStatus();
+      };
+
+      const resetRound = () => {
+        if (isConnected) {
+          send({ type: "newRound" });
+          return;
+        }
+
+        currentPlayer = "X";
+        board = Array(9).fill("");
+        roundOver = false;
+        updateBoard();
+        updateTurnStatus();
+      };
+
+      const resetGame = () => {
+        if (isConnected) {
+          send({ type: "newGame" });
+          return;
+        }
+
+        score = { X: 0, O: 0 };
+        updateScore();
+        resetRound();
+      };
+
+      const connect = () => {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          return;
+        }
+
+        const url = $("#serverUrl").val().trim();
+        setConnectionState(false, "Conectando...", "badge-info");
+
+        socket = new WebSocket(url);
+
+        socket.addEventListener("open", () => {
+          setConnectionState(true, "Conectado", "badge-info");
+        });
+
+        socket.addEventListener("message", (event) => {
+          const data = JSON.parse(event.data);
+
+          if (data.type === "welcome") {
+            myPlayer = data.player;
+            if (myPlayer) {
+              setConnectionState(true, `Você é ${myPlayer}`, myPlayer === "X" ? "badge-success" : "badge-warning");
+            } else {
+              setConnectionState(true, "Assistindo", "badge-secondary");
+            }
+            applyServerState(data.state);
+          }
+
+          if (data.type === "state") {
+            applyServerState(data.state);
+          }
+        });
+
+        socket.addEventListener("close", () => {
+          myPlayer = null;
+          socket = null;
+          setConnectionState(false, "Offline", "badge-secondary");
+          updateBoard();
+          updateTurnStatus();
+        });
+
+        socket.addEventListener("error", () => {
+          setConnectionState(false, "Erro", "badge-danger");
+          setStatus("Não foi possível conectar ao servidor.", "danger");
+        });
+      };
+
+      $("#serverUrl").val(defaultWsUrl());
+
+      $("#connectBtn").click(connect);
+      $("#disconnectBtn").click(() => {
+        if (socket) {
+          socket.close();
+        }
+      });
+      $("#NewGame").click(resetGame);
+      $("#newRound").click(resetRound);
+      $(".cell").click(function () {
+        handleMove($(this).data("i"));
+      });
+
+      updateBoard();
+      updateTurnStatus();
     </script>
   </body>
 </html>
