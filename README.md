@@ -1,65 +1,43 @@
 # Jogo da Velha
 
-## Multiplayer local
+## Multiplayer local por codigo
 
-1. No aparelho que vai ser o servidor, rode:
+1. No computador que vai ser o servidor, rode:
 
 ```bash
 npm run dev
 ```
 
-2. O terminal vai mostrar endereços como:
+2. Abra o jogo no servidor:
 
 ```text
 http://localhost:3000
-http://192.168.0.10:3000
 ```
 
-3. Abra o endereço da rede local nos dois aparelhos, por exemplo `http://192.168.0.10:3000`.
+3. A tela vai mostrar um codigo numerico do servidor.
 
-4. Clique em **Conectar** nos dois navegadores. O primeiro jogador vira **X** e o segundo vira **O**.
+4. Envie esse codigo para o outro jogador. Ele cola o codigo no campo de conexao e clica em **Conectar**.
 
-Os aparelhos precisam estar na mesma rede Wi-Fi. Se não conectar, libere a porta `3000` no firewall do computador que está servindo o jogo.
+5. O primeiro jogador conectado vira **X** e o segundo vira **O**.
 
-Se a porta `3000` já estiver ocupada, rode em outra porta:
+Os aparelhos precisam estar na mesma rede Wi-Fi. Se nao conectar, libere a porta `3000` no firewall do computador que esta servindo o jogo.
+
+Se a porta `3000` ja estiver ocupada, rode em outra porta:
 
 ```powershell
 $env:PORT=3010; npm run dev
 ```
-<<<<<<< HEAD
-=======
 
-3. O jogo será executado diretamente no navegador.
-
----
-
-## 📷 Interface
-
-Tela principal composta por:
-
-- Tabuleiro 3x3
-- Indicador de turno do jogador
-- Botão de reinício da partida
-
----
-
-## 👨‍🎓 Autores
+## Autores
 
 Desenvolvido por:
-**Kawhe Alves dos Santos**
-**Vitor**
-**Carlos**
-**Nykolas**
-**Samuel**
 
-## 🔗 [EXPLICAÇÃO](https://www.tldraw.com/f/Zmxg6DC51OmRqUo6BooZU?d=v183.-95.1097.628.page)
+- Kawhe Alves dos Santos
+- Vitor
+- Carlos
+- Nykolas
+- Samuel
 
-Curso: Engenharia Civil  
-Disciplina: Algoritmo e Programação
-
----
-
-## 📅 Ano
-
-2026
->>>>>>> 5f52d873e18d77a4c83c41cbfd828272e719a0b3
+Curso: Engenharia Civil
+Disciplina: Algoritmo e Programacao
+Ano: 2026

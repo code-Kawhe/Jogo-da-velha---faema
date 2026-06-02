@@ -56,6 +56,11 @@
         min-width: 86px;
       }
 
+      .share-code {
+        font-size: 1.35rem;
+        letter-spacing: 0.08em;
+      }
+
       @media (max-width: 576px) {
         .connection-grid {
           grid-template-columns: 1fr;
@@ -76,13 +81,16 @@
           <strong>Multiplayer local</strong>
           <span class="badge badge-secondary player-badge" id="playerBadge">Offline</span>
         </div>
+        <div class="alert alert-light py-2" id="hostCodeBox">
+          Codigo do servidor: <strong class="share-code" id="hostCode">abrindo...</strong>
+        </div>
         <div class="connection-grid">
-          <input class="form-control" id="serverUrl" aria-label="Endereço do servidor" />
+          <input class="form-control" id="serverUrl" inputmode="numeric" aria-label="Codigo do servidor" />
           <button class="btn btn-primary" id="connectBtn">Conectar</button>
           <button class="btn btn-outline-secondary" id="disconnectBtn" disabled>Desconectar</button>
         </div>
         <small class="form-text text-muted mt-2" id="connectionHelp">
-          Para jogar em dois aparelhos, rode o servidor e abra este endereço nos dois navegadores.
+          Envie o codigo para o outro jogador. Ele cola o codigo aqui e clica em conectar.
         </small>
       </div>
     </div>
@@ -141,6 +149,45 @@
       const defaultWsUrl = () => {
         const protocol = location.protocol === "https:" ? "wss:" : "ws:";
         return `${protocol}//${location.host || "localhost:3000"}`;
+      };
+
+      const numberToIp = (value) => {
+        let number = Number(value);
+        const parts = [];
+
+        for (let index = 0; index < 4; index++) {
+          parts.unshift(number % 256);
+          number = Math.floor(number / 256);
+        }
+
+        return parts.join(".");
+      };
+
+      const codeToWsUrl = (value) => {
+        const code = value.replace(/\D/g, "");
+
+        if (code.length !== 15) {
+          return null;
+        }
+
+        const ipNumber = code.slice(0, 10);
+        const portNumber = Number(code.slice(10));
+
+        if (!portNumber || portNumber > 65535) {
+          return null;
+        }
+
+        return `ws://${numberToIp(ipNumber)}:${portNumber}`;
+      };
+
+      const normalizeServerInput = (value) => {
+        const trimmed = value.trim();
+
+        if (/^\d+$/.test(trimmed)) {
+          return codeToWsUrl(trimmed);
+        }
+
+        return trimmed;
       };
 
       const setStatus = (message, type = "info") => {
@@ -301,7 +348,13 @@
           return;
         }
 
-        const url = $("#serverUrl").val().trim();
+        const url = normalizeServerInput($("#serverUrl").val());
+
+        if (!url) {
+          setStatus("Codigo do servidor invalido.", "danger");
+          return;
+        }
+
         setConnectionState(false, "Conectando...", "badge-info");
 
         socket = new WebSocket(url);
@@ -342,7 +395,28 @@
         });
       };
 
-      $("#serverUrl").val(defaultWsUrl());
+      const loadHostCode = () => {
+        fetch("/connection-code")
+          .then((response) => (response.ok ? response.json() : null))
+          .then((data) => {
+            if (!data || !data.code) {
+              $("#hostCode").text("indisponivel");
+              $("#hostCodeBox").addClass("d-none");
+              $("#serverUrl").val(defaultWsUrl());
+              return;
+            }
+
+            $("#hostCode").text(data.code);
+            $("#serverUrl").val(data.code);
+          })
+          .catch(() => {
+            $("#hostCode").text("indisponivel");
+            $("#hostCodeBox").addClass("d-none");
+            $("#serverUrl").val(defaultWsUrl());
+          });
+      };
+
+      loadHostCode();
 
       $("#connectBtn").click(connect);
       $("#disconnectBtn").click(() => {

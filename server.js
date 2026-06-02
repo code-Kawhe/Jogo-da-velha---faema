@@ -43,8 +43,43 @@ function contentType(filePath) {
   }[ext] || "application/octet-stream";
 }
 
+function ipToNumber(address) {
+  return address.split(".").reduce((total, part) => total * 256 + Number(part), 0);
+}
+
+function connectionCode(address) {
+  return `${String(ipToNumber(address)).padStart(10, "0")}${String(port).padStart(5, "0")}`;
+}
+
+function isPrivateAddress(address) {
+  const [first, second] = address.split(".").map(Number);
+  return first === 10 || (first === 172 && second >= 16 && second <= 31) || (first === 192 && second === 168);
+}
+
+function codePayload() {
+  const addresses = localAddresses().sort((a, b) => Number(isPrivateAddress(b)) - Number(isPrivateAddress(a)));
+  const codes = addresses.map((address) => ({
+    address,
+    url: `http://${address}:${port}`,
+    code: connectionCode(address),
+  }));
+
+  return {
+    port,
+    code: codes[0]?.code || null,
+    codes,
+  };
+}
+
 function serveFile(req, res) {
   const urlPath = decodeURIComponent(new URL(req.url, `http://${req.headers.host}`).pathname);
+
+  if (urlPath === "/connection-code") {
+    res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+    res.end(JSON.stringify(codePayload()));
+    return;
+  }
+
   const requested = urlPath === "/" ? "/velha.html" : urlPath;
   const filePath = path.normalize(path.join(root, requested));
 
@@ -284,7 +319,7 @@ server.on("upgrade", (req, socket) => {
 
 server.listen(port, "0.0.0.0", () => {
   console.log(`Servidor do Jogo da Velha rodando em http://localhost:${port}`);
-  for (const address of localAddresses()) {
-    console.log(`Na rede local: http://${address}:${port}`);
+  for (const item of codePayload().codes) {
+    console.log(`Codigo para conectar: ${item.code} (${item.url})`);
   }
 });
